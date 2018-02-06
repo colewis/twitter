@@ -1,13 +1,18 @@
 
 from requests_oauthlib import OAuth1Session
-import secrets
+import secrets ###What exactly is this importing?
+#from secret_data import *
 
-client_key = secrets.api_key
-client_secret = secrets.api_secret
+consumer_key = secrets.CONSUMER_KEY
+consumer_secret = secrets.CONSUMER_SECRET
+access_token = secrets.ACCESS_KEY
+access_secret = secrets.ACCESS_SECRET
+
+
 
 # STEP 1: GET A REQUEST TOKEN
 # We have to start by obtaining a 'request' token
-# We will supply our client key and client secret
+# We will supply our consumer key and consumer secret
 # ...otherwise no token -- you can't even get in the door!
 #
 # At this point we have provided our application's credentials
@@ -15,7 +20,7 @@ client_secret = secrets.api_secret
 # authorization for a particular user.
 request_token_url = 'https://api.twitter.com/oauth/request_token'
 
-oauth = OAuth1Session(client_key, client_secret=client_secret)
+oauth = OAuth1Session(consumer_key, consumer_secret=consumer_secret)
 fetch_response = oauth.fetch_request_token(request_token_url)
 resource_owner_key = fetch_response.get('oauth_token')
 resource_owner_secret = fetch_response.get('oauth_token_secret')
@@ -60,8 +65,8 @@ verifier = input('Paste the verification code here: ')
 # data. There is yet another URL we need to hit to get this.
 access_token_url = 'https://api.twitter.com/oauth/access_token'
 
-oauth = OAuth1Session(client_key,
-                          client_secret=client_secret,
+oauth = OAuth1Session(consumer_key,
+                          consumer_secret=consumer_secret,
                           resource_owner_key=resource_owner_key,
                           resource_owner_secret=resource_owner_secret,
                           verifier=verifier)
@@ -74,19 +79,22 @@ print(resource_owner_key, resource_owner_secret)
 
 # STEP 4: And here we go. Finally we can get the user's data, using the
 # access token (in two parts: the token, and the secret)
-# Note that we have to pass in our client key and secret (this belongs to
+# Note that we have to pass in our consumer key and secret (this belongs to
 # our application) and the "resource owner" key and secret (this belongs
 # to the user that we just logged in)
+
+
+
 protected_url = 'https://api.twitter.com/1.1/account/settings.json'
 
-oauth = OAuth1Session(client_key,
-                          client_secret=client_secret,
+oauth = OAuth1Session(consumer_key,
+                          consumer_secret=consumer_secret,
                           resource_owner_key=resource_owner_key,
                           resource_owner_secret=resource_owner_secret)
 r = oauth.get(protected_url)
 print (r.text)
 
 protected_url = 'https://api.twitter.com/1.1/search/tweets.json'
-params = {'q':'food'}
+params = {'q':'user'}
 r = oauth.get(protected_url, params=params)
 print (r.text)
